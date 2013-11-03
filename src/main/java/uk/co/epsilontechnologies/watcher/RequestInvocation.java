@@ -11,16 +11,16 @@ public class RequestInvocation {
 
     private final String contextPath;
     private final String requestUri;
-    private final String queryString;
     private final List<Cookie> cookies;
     private final Map<String,String> headers;
+    private final Map<String,String> parameters;
     private final String method;
     private final String content;
 
     public RequestInvocation(final WatchableHttpServletRequestWrapper httpServletRequestWrapper) {
         this.requestUri = httpServletRequestWrapper.getRequestURI();
         this.contextPath = httpServletRequestWrapper.getContextPath();
-        this.queryString = httpServletRequestWrapper.getQueryString();
+        this.parameters = parseParameters(httpServletRequestWrapper);
         this.cookies = parseCookies(httpServletRequestWrapper);
         this.headers = parseHeaders(httpServletRequestWrapper);
         this.method = httpServletRequestWrapper.getMethod();
@@ -38,6 +38,17 @@ public class RequestInvocation {
         return result;
     }
 
+    private Map<String, String> parseParameters(final WatchableHttpServletRequestWrapper httpServletRequestWrapper) {
+        final Map<String,String> result = new HashMap<String,String>();
+        final Enumeration<String> parameterNames = httpServletRequestWrapper.getParameterNames();
+        while (parameterNames.hasMoreElements()) {
+            final String parameterName = parameterNames.nextElement();
+            final String parameterValue = httpServletRequestWrapper.getParameter(parameterName);
+            result.put(parameterName, parameterValue);
+        }
+        return result;
+    }
+
     private List<Cookie> parseCookies(final WatchableHttpServletRequestWrapper httpServletRequestWrapper) {
         if (httpServletRequestWrapper.getCookies() != null) {
             return Arrays.asList(httpServletRequestWrapper.getCookies());
@@ -50,8 +61,8 @@ public class RequestInvocation {
         return contextPath;
     }
 
-    public String getQueryString() {
-        return queryString;
+    public Map<String,String> getParameters() {
+        return parameters;
     }
 
     public List<Cookie> getCookies() {
