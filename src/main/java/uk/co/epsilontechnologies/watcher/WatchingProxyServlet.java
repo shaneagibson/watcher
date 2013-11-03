@@ -37,11 +37,6 @@ public class WatchingProxyServlet extends ProxyServlet {
     }
 
     @Override
-    public void init(final ServletConfig servletConfig) throws ServletException {
-        super.init(servletConfig);
-    }
-
-    @Override
     protected URI rewriteURI(final HttpServletRequest request) {
         final String path = request.getRequestURI();
         final String queryString = request.getQueryString();
@@ -51,8 +46,7 @@ public class WatchingProxyServlet extends ProxyServlet {
     @Override
     protected HttpClient newHttpClient() {
         final SslContextFactory sslContextFactory = new SslContextFactory();
-        final HttpClient httpClient = new HttpClient(sslContextFactory);
-        return httpClient;
+        return new HttpClient(sslContextFactory);
     }
 
     @Override

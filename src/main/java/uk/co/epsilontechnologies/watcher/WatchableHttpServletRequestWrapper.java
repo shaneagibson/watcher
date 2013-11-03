@@ -27,26 +27,21 @@ public class WatchableHttpServletRequestWrapper extends HttpServletRequestWrappe
         final InputStream inputStream = IOUtils.toInputStream(body);
 
         final ServletInputStream servletInputStream = new ServletInputStream() {
-
             @Override
             public int read() throws IOException {
                 return inputStream.read();
             }
-
             @Override
             public boolean isFinished() {
                 return false;
             }
-
             @Override
             public boolean isReady() {
                 return true;
             }
-
             @Override
             public void setReadListener(final ReadListener readListener) {
             }
-
         };
 
         return servletInputStream;
