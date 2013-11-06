@@ -24,7 +24,7 @@ Watcher provides a recording proxy for web requests:
         // ARRANGE
 
         final RegExBodyRequestCaptor tokenCaptor = new RegExBodyRequestCaptor("\\{ \"token\" : \"([a-zA-Z0-9]{5})\" }");
-        when(notificationServiceSpy.post("/notification/sms", parameters("phoneNumber", "07920053773"))).thenCapture(tokenCaptor);
+        when(notificationServiceSpy.post("/notification/sms", parameters(pair("phoneNumber", "07920053773")))).thenCapture(tokenCaptor);
 
         ...
 
