@@ -7,6 +7,9 @@ import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
 import java.io.*;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Map;
 
 public class WatchableHttpServletRequestWrapper extends HttpServletRequestWrapper {
 
@@ -49,6 +52,29 @@ public class WatchableHttpServletRequestWrapper extends HttpServletRequestWrappe
 
     public String getBody() {
         return body;
+    }
+
+    public Map<String, String> getParametersAsMap() {
+        final Enumeration<String> parameterNames = super.getParameterNames();
+        final Map<String,String> result = new HashMap<String,String>();
+        while (parameterNames.hasMoreElements()) {
+            final String name = parameterNames.nextElement();
+            final String value = getParameter(name);
+            result.put(name, value);
+        }
+        return result;
+    }
+
+
+    public Map<String, String> getHeadersAsMap() {
+        final Enumeration<String> headerNames = super.getHeaderNames();
+        final Map<String,String> result = new HashMap<String,String>();
+        while (headerNames.hasMoreElements()) {
+            final String name = headerNames.nextElement();
+            final String value = getHeader(name);
+            result.put(name, value);
+        }
+        return result;
     }
 
 }

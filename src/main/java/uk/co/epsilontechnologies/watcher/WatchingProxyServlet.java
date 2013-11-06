@@ -1,7 +1,6 @@
 package uk.co.epsilontechnologies.watcher;
 
 import org.eclipse.jetty.client.HttpClient;
-import org.eclipse.jetty.client.api.Request;
 import org.eclipse.jetty.proxy.ProxyServlet;
 import org.eclipse.jetty.util.ssl.SslContextFactory;
 
@@ -11,27 +10,35 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.net.URI;
-import java.util.List;
+import java.util.Map;
 
 public class WatchingProxyServlet extends ProxyServlet {
 
     private final String rewriteHost;
     private final int rewritePort;
-    private final List<RequestInvocation> watchedInvocations;
+    private final Map<Request,RequestCaptor[]> requestCaptors;
+    private final RequestMatcher requestMatcher;
 
     public WatchingProxyServlet(
             final String rewriteHost,
             final int rewritePort,
-            final List<RequestInvocation> watchedInvocations) {
+            final Map<Request,RequestCaptor[]> requestCaptors) {
         this.rewriteHost = rewriteHost;
         this.rewritePort = rewritePort;
-        this.watchedInvocations = watchedInvocations;
+        this.requestCaptors = requestCaptors;
+        this.requestMatcher = new RequestMatcher();
     }
 
     @Override
     public void service(final ServletRequest servletRequest, final ServletResponse servletResponse) throws ServletException, IOException {
         final WatchableHttpServletRequestWrapper watchableHttpServletRequestWrapper = new WatchableHttpServletRequestWrapper((HttpServletRequest) servletRequest);
-        watchedInvocations.add(new RequestInvocation(watchableHttpServletRequestWrapper));
+        for (final Request request : requestCaptors.keySet()) {
+            if (requestMatcher.matches(request, watchableHttpServletRequestWrapper)) {
+                for (final RequestCaptor requestCaptor : requestCaptors.get(request)) {
+                    requestCaptor.populate(watchableHttpServletRequestWrapper);
+                }
+            }
+        }
         super.service(watchableHttpServletRequestWrapper, servletResponse);
     }
 
@@ -50,7 +57,7 @@ public class WatchingProxyServlet extends ProxyServlet {
 
     @Override
     protected void customizeProxyRequest(
-            final Request proxyRequest,
+            final org.eclipse.jetty.client.api.Request proxyRequest,
             final HttpServletRequest request) {
         proxyRequest.getHeaders().remove("Host");
     }

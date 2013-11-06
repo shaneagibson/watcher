@@ -23,6 +23,9 @@ Watcher provides a recording proxy for web requests:
 
         // ARRANGE
 
+        final RegExBodyRequestCaptor tokenCaptor = new RegExBodyRequestCaptor("\\{ \"token\" : \"([a-zA-Z0-9]{5})\" }");
+        when(notificationServiceSpy.post("/notification/sms", parameters("phoneNumber", "07920053773"))).thenCapture(tokenCaptor);
+
         ...
 
         // ACT
@@ -31,20 +34,7 @@ Watcher provides a recording proxy for web requests:
 
         // ASSERT
 
-        final List<RequestInvocations> issuedNotificationRequests = this.notificationServiceSpy.getWatchedInvocations();
-        assertEquals(1, issuedNotificationRequests.size());
-        assertEquals("/notification/sms", issuedNotificationRequests.getRequestUri());
-        assertEquals(2, issuedNotificationRequests.getParameters());
-        assertEquals("phoneNumber", issuedNotificationRequests.getParameters().get(0).getKey());
-        assertEquals("07920053773", issuedNotificationRequests.getParameters().get(0).getValue());
-        assertEquals("template", issuedNotificationRequests.getParameters().get(1).getKey());
-        assertEquals("ACCOUNT_ACTIVATION_MESSAGE", issuedNotificationRequests.getParameters().get(1).getValue());
-
-        final Matcher contentMatcher = Pattern.compile("\\{ \"token\" : \"([a-zA-Z0-9]{5})\" }").matcher(issuedNotificationRequests.getContent());
-
-        assertTrue(contentMatcher.matches());
-
-        final String token = contentMatcher.group(1);
+        final String token = tokenCaptor.getCapturedValue();
 
         ...
 
