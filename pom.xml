@@ -5,7 +5,7 @@
 
     <groupId>uk.co.epsilontechnologies</groupId>
     <artifactId>watcher</artifactId>
-    <version>1.0.2</version>
+    <version>1.0.3-SNAPSHOT</version>
     <packaging>jar</packaging>
     <name>Watcher</name>
     <description>A test utility for SOA projects, which allows the spying of RESTful resources though a simple java API.</description>
