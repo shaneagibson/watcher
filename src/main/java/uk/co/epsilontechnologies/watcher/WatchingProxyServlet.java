@@ -8,6 +8,7 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.net.URI;
 import java.util.Map;
@@ -20,18 +21,19 @@ public class WatchingProxyServlet extends ProxyServlet {
     private final RequestMatcher requestMatcher;
 
     public WatchingProxyServlet(
+            final String contextPath,
             final String rewriteHost,
             final int rewritePort,
             final Map<Request,RequestCaptor[]> requestCaptors) {
         this.rewriteHost = rewriteHost;
         this.rewritePort = rewritePort;
         this.requestCaptors = requestCaptors;
-        this.requestMatcher = new RequestMatcher();
+        this.requestMatcher = new RequestMatcher(contextPath);
     }
 
     @Override
-    public void service(final ServletRequest servletRequest, final ServletResponse servletResponse) throws ServletException, IOException {
-        final WatchableHttpServletRequestWrapper watchableHttpServletRequestWrapper = new WatchableHttpServletRequestWrapper((HttpServletRequest) servletRequest);
+    protected void service(final HttpServletRequest httpServletRequest, final HttpServletResponse httpServletResponse) throws ServletException, IOException {
+        final WatchableHttpServletRequestWrapper watchableHttpServletRequestWrapper = new WatchableHttpServletRequestWrapper(httpServletRequest);
         for (final Request request : requestCaptors.keySet()) {
             if (requestMatcher.matches(request, watchableHttpServletRequestWrapper)) {
                 for (final RequestCaptor requestCaptor : requestCaptors.get(request)) {
@@ -39,7 +41,7 @@ public class WatchingProxyServlet extends ProxyServlet {
                 }
             }
         }
-        super.service(watchableHttpServletRequestWrapper, servletResponse);
+        super.service(watchableHttpServletRequestWrapper, httpServletResponse);
     }
 
     @Override

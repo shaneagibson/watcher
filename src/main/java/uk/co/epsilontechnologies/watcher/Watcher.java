@@ -13,9 +13,9 @@ public class Watcher {
 
     private final Map<Request,RequestCaptor[]> requestCaptors = new HashMap<Request, RequestCaptor[]>();
 
-    public Watcher(final int port, final String rewriteHost, final int rewritePort) {
+    public Watcher(final String contextPath, final int port, final String rewriteHost, final int rewritePort) {
         this.server = new Server(port);
-        this.server.setHandler(new ProxyHandler(rewriteHost, rewritePort));
+        this.server.setHandler(new ProxyHandler(contextPath, rewriteHost, rewritePort));
     }
 
     public void start() {
@@ -155,9 +155,9 @@ public class Watcher {
 
         private final WatchingProxyServlet watchingProxyServlet;
 
-        public ProxyHandler(final String rewriteHost, final int rewritePort) {
+        public ProxyHandler(final String contextPath, final String rewriteHost, final int rewritePort) {
             super(ServletContextHandler.SESSIONS);
-            this.watchingProxyServlet = new WatchingProxyServlet(rewriteHost, rewritePort, requestCaptors);
+            this.watchingProxyServlet = new WatchingProxyServlet(contextPath, rewriteHost, rewritePort, requestCaptors);
             this.addServlet(new ServletHolder(watchingProxyServlet), "/*");
         }
 

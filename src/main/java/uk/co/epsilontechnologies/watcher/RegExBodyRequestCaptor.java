@@ -18,7 +18,7 @@ public class RegExBodyRequestCaptor implements RequestCaptor<List<String>> {
     public void populate(final WatchableHttpServletRequestWrapper watchableHttpServletRequestWrapper) {
         final Matcher contentMatcher = Pattern.compile(regEx).matcher(watchableHttpServletRequestWrapper.getBody());
         while (contentMatcher.find()) {
-           capturedValues.add(contentMatcher.group(0));
+           capturedValues.add(contentMatcher.group(1));
         }
     }
 

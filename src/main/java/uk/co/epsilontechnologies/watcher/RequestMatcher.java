@@ -5,14 +5,16 @@ import java.util.regex.Pattern;
 
 public class RequestMatcher {
 
+    private final String contextPath;
     private final MapMatcher mapMatcher;
     private final StringMatcher stringMatcher;
 
-    public RequestMatcher() {
-        this(new MapMatcher(), new StringMatcher());
+    public RequestMatcher(final String contextPath) {
+        this(contextPath, new MapMatcher(), new StringMatcher());
     }
 
-    public RequestMatcher(final MapMatcher mapMatcher, final StringMatcher stringMatcher) {
+    public RequestMatcher(final String contextPath, final MapMatcher mapMatcher, final StringMatcher stringMatcher) {
+        this.contextPath = contextPath;
         this.mapMatcher = mapMatcher;
         this.stringMatcher = stringMatcher;
     }
@@ -41,7 +43,7 @@ public class RequestMatcher {
     }
 
     private boolean uriMatches(final Request requestToMatch, final WatchableHttpServletRequestWrapper requestWrapper) {
-        return stringMatcher.match(requestWrapper.getRequestURI(), requestToMatch.getURI());
+        return stringMatcher.match(requestWrapper.getRequestURI(), contextPath + requestToMatch.getURI());
     }
 
     private boolean bodyMatches(final Request requestToMatch, final WatchableHttpServletRequestWrapper requestWrapper) {

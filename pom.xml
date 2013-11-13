@@ -9,7 +9,7 @@
     <packaging>jar</packaging>
     <name>Watcher</name>
     <description>A test utility for SOA projects, which allows the spying of RESTful resources though a simple java API.</description>
-    <url>http://github.com/shaneagibson/primer</url>
+    <url>http://github.com/shaneagibson/watcher</url>
 
     <licenses>
         <license>
@@ -36,13 +36,15 @@
 
     <distributionManagement>
         <repository>
-            <id>bintray-shaneagibson-maven-primer</id>
+            <id>bintray-shaneagibson-maven-watcher</id>
             <name>shaneagibson-maven-watcher</name>
             <url>https://api.bintray.com/maven/shaneagibson/maven/watcher</url>
         </repository>
     </distributionManagement>
 
     <dependencies>
+
+        <!-- COMPILE DEPENDENCIES -->
 
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
@@ -81,6 +83,8 @@
         </dependency>
 
 
+        <!-- TEST DEPENDENCIES -->
+
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-all</artifactId>
@@ -106,6 +110,20 @@
             <groupId>org.powermock</groupId>
             <artifactId>powermock-module-junit4</artifactId>
             <version>1.5.1</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>uk.co.epsilontechnologies</groupId>
+            <artifactId>primer</artifactId>
+            <version>1.0.21-SNAPSHOT</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-web</artifactId>
+            <version>3.2.2.RELEASE</version>
             <scope>test</scope>
         </dependency>
 
