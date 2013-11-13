@@ -100,6 +100,23 @@ public class WatcherTest {
         assertEquals("{ \"key\" : \"value\" }", bodyRequestCaptor.getCapturedValue());
     }
 
+    @Test
+    public void shouldCaptureMultipleValuesSimultaneously() {
+
+        // arrange
+        PrimerStatics.when(primer.get("/get")).thenReturn(PrimerStatics.response(200));
+        final ParameterValueRequestCaptor parameterValueCaptor = new ParameterValueRequestCaptor("key");
+        final HeaderValueRequestCaptor headerValueRequestCaptor = new HeaderValueRequestCaptor("key");
+        when(this.watcher.get("/get")).thenCapture(parameterValueCaptor, headerValueRequestCaptor);
+
+        // act
+        restTemplate.execute("http://localhost:9000/test/get?key=value", HttpMethod.GET, new TestRequestCallback(null, "value"), new TestResponseExtractor());
+
+        // assert
+        assertEquals("value", parameterValueCaptor.getCapturedValue());
+        assertEquals("value", headerValueRequestCaptor.getCapturedValue());
+    }
+
 
     static class TestRequestCallback implements RequestCallback {
 
