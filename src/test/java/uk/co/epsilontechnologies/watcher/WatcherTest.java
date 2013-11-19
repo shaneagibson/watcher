@@ -23,8 +23,8 @@ public class WatcherTest {
 
     private final RestTemplate restTemplate = new RestTemplate();
 
-    private final Watcher watcher = new Watcher("/test", 9000, "localhost", 9001);
-    private final Primer primer = new Primer("/test", 9001);
+    private final Watcher watcher = new Watcher("/test", 8500, "localhost", 8501);
+    private final Primer primer = new Primer("/test", 8501);
 
     @Before
     public void setUp() {
@@ -47,7 +47,7 @@ public class WatcherTest {
         when(this.watcher.get("/get")).thenCapture(parameterValueCaptor);
 
         // act
-        restTemplate.execute("http://localhost:9000/test/get?key=value", HttpMethod.GET, new TestRequestCallback(), new TestResponseExtractor());
+        restTemplate.execute("http://localhost:8500/test/get?key=value", HttpMethod.GET, new TestRequestCallback(), new TestResponseExtractor());
 
         // assert
         assertEquals("value", parameterValueCaptor.getCapturedValue());
@@ -63,7 +63,7 @@ public class WatcherTest {
         when(this.watcher.get("/get")).thenCapture(headerValueRequestCaptor);
 
         // act
-        restTemplate.execute("http://localhost:9000/test/get", HttpMethod.GET, new TestRequestCallback(null, "value"), new TestResponseExtractor());
+        restTemplate.execute("http://localhost:8500/test/get", HttpMethod.GET, new TestRequestCallback(null, "value"), new TestResponseExtractor());
 
         // assert
         assertEquals("value", headerValueRequestCaptor.getCapturedValue());
@@ -78,7 +78,7 @@ public class WatcherTest {
         when(this.watcher.post("/post", "\\{ \"key\" : \"([a-z]{5})\" }")).thenCapture(regExBodyRequestCaptor);
 
         // act
-        restTemplate.execute("http://localhost:9000/test/post", HttpMethod.POST, new TestRequestCallback("{ \"key\" : \"value\" }", null), new TestResponseExtractor());
+        restTemplate.execute("http://localhost:8500/test/post", HttpMethod.POST, new TestRequestCallback("{ \"key\" : \"value\" }", null), new TestResponseExtractor());
 
         // assert
         assertEquals(1, regExBodyRequestCaptor.getCapturedValue().size());
@@ -94,7 +94,7 @@ public class WatcherTest {
         when(this.watcher.post("/post", "\\{ \"key\" : \"([a-z]{5})\" }")).thenCapture(bodyRequestCaptor);
 
         // act
-        restTemplate.execute("http://localhost:9000/test/post", HttpMethod.POST, new TestRequestCallback("{ \"key\" : \"value\" }", null), new TestResponseExtractor());
+        restTemplate.execute("http://localhost:8500/test/post", HttpMethod.POST, new TestRequestCallback("{ \"key\" : \"value\" }", null), new TestResponseExtractor());
 
         // assert
         assertEquals("{ \"key\" : \"value\" }", bodyRequestCaptor.getCapturedValue());
@@ -110,7 +110,7 @@ public class WatcherTest {
         when(this.watcher.get("/get")).thenCapture(parameterValueCaptor, headerValueRequestCaptor);
 
         // act
-        restTemplate.execute("http://localhost:9000/test/get?key=value", HttpMethod.GET, new TestRequestCallback(null, "value"), new TestResponseExtractor());
+        restTemplate.execute("http://localhost:8500/test/get?key=value", HttpMethod.GET, new TestRequestCallback(null, "value"), new TestResponseExtractor());
 
         // assert
         assertEquals("value", parameterValueCaptor.getCapturedValue());
