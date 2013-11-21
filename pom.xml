@@ -34,6 +34,14 @@
         </developer>
     </developers>
 
+    <repositories>
+        <repository>
+            <id>bintray-shaneagibson-maven-primer</id>
+            <name>shaneagibson-maven-primer</name>
+            <url>https://api.bintray.com/maven/shaneagibson/maven/primer</url>
+        </repository>
+    </repositories>
+
     <distributionManagement>
         <repository>
             <id>bintray-shaneagibson-maven-watcher</id>
@@ -116,7 +124,7 @@
         <dependency>
             <groupId>uk.co.epsilontechnologies</groupId>
             <artifactId>primer</artifactId>
-            <version>1.0.21-SNAPSHOT</version>
+            <version>1.0.21</version>
             <scope>test</scope>
         </dependency>
 

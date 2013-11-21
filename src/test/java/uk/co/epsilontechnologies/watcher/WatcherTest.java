@@ -1,10 +1,7 @@
 package uk.co.epsilontechnologies.watcher;
 
 import org.apache.commons.io.IOUtils;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.*;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.client.ClientHttpRequest;
 import org.springframework.http.client.ClientHttpResponse;
@@ -28,15 +25,20 @@ public class WatcherTest {
     private static final Primer primer = new Primer("/test", 8501);
 
     @BeforeClass
-    public static void setUp() {
+    public static void setUpClass() {
         watcher.start();
         primer.start();
     }
 
-    @After
-    public void tearDown() {
+    @AfterClass
+    public static void tearDownClass() {
         watcher.stop();
         primer.stop();
+    }
+
+    @After
+    public void tearDown() {
+        primer.reset();
     }
 
     @Test
