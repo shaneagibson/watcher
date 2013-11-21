@@ -3,6 +3,7 @@ package uk.co.epsilontechnologies.watcher;
 import org.apache.commons.io.IOUtils;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.client.ClientHttpRequest;
@@ -23,19 +24,19 @@ public class WatcherTest {
 
     private final RestTemplate restTemplate = new RestTemplate();
 
-    private final Watcher watcher = new Watcher("/test", 8500, "localhost", 8501);
-    private final Primer primer = new Primer("/test", 8501);
+    private static final Watcher watcher = new Watcher("/test", 8500, "localhost", 8501);
+    private static final Primer primer = new Primer("/test", 8501);
 
-    @Before
-    public void setUp() {
-        this.watcher.start();
-        this.primer.start();
+    @BeforeClass
+    public static void setUp() {
+        watcher.start();
+        primer.start();
     }
 
     @After
     public void tearDown() {
-        this.watcher.stop();
-        this.primer.stop();
+        watcher.stop();
+        primer.stop();
     }
 
     @Test
@@ -44,7 +45,7 @@ public class WatcherTest {
         // arrange
         PrimerStatics.when(primer.get("/get")).thenReturn(PrimerStatics.response(200));
         final ParameterValueRequestCaptor parameterValueCaptor = new ParameterValueRequestCaptor("key");
-        when(this.watcher.get("/get")).thenCapture(parameterValueCaptor);
+        when(watcher.get("/get")).thenCapture(parameterValueCaptor);
 
         // act
         restTemplate.execute("http://localhost:8500/test/get?key=value", HttpMethod.GET, new TestRequestCallback(), new TestResponseExtractor());
@@ -60,7 +61,7 @@ public class WatcherTest {
         // arrange
         PrimerStatics.when(primer.get("/get")).thenReturn(PrimerStatics.response(200));
         final HeaderValueRequestCaptor headerValueRequestCaptor = new HeaderValueRequestCaptor("key");
-        when(this.watcher.get("/get")).thenCapture(headerValueRequestCaptor);
+        when(watcher.get("/get")).thenCapture(headerValueRequestCaptor);
 
         // act
         restTemplate.execute("http://localhost:8500/test/get", HttpMethod.GET, new TestRequestCallback(null, "value"), new TestResponseExtractor());
@@ -75,7 +76,7 @@ public class WatcherTest {
         // arrange
         PrimerStatics.when(primer.post("/post", "\\{ \"key\" : \"([a-z]{5})\" }")).thenReturn(PrimerStatics.response(200));
         final RegExBodyRequestCaptor regExBodyRequestCaptor = new RegExBodyRequestCaptor("\\{ \"key\" : \"([a-z]{5})\" }");
-        when(this.watcher.post("/post", "\\{ \"key\" : \"([a-z]{5})\" }")).thenCapture(regExBodyRequestCaptor);
+        when(watcher.post("/post", "\\{ \"key\" : \"([a-z]{5})\" }")).thenCapture(regExBodyRequestCaptor);
 
         // act
         restTemplate.execute("http://localhost:8500/test/post", HttpMethod.POST, new TestRequestCallback("{ \"key\" : \"value\" }", null), new TestResponseExtractor());
@@ -91,7 +92,7 @@ public class WatcherTest {
         // arrange
         PrimerStatics.when(primer.post("/post", "\\{ \"key\" : \"([a-z]{5})\" }")).thenReturn(PrimerStatics.response(200));
         final BodyRequestCaptor bodyRequestCaptor = new BodyRequestCaptor();
-        when(this.watcher.post("/post", "\\{ \"key\" : \"([a-z]{5})\" }")).thenCapture(bodyRequestCaptor);
+        when(watcher.post("/post", "\\{ \"key\" : \"([a-z]{5})\" }")).thenCapture(bodyRequestCaptor);
 
         // act
         restTemplate.execute("http://localhost:8500/test/post", HttpMethod.POST, new TestRequestCallback("{ \"key\" : \"value\" }", null), new TestResponseExtractor());
@@ -107,7 +108,7 @@ public class WatcherTest {
         PrimerStatics.when(primer.get("/get")).thenReturn(PrimerStatics.response(200));
         final ParameterValueRequestCaptor parameterValueCaptor = new ParameterValueRequestCaptor("key");
         final HeaderValueRequestCaptor headerValueRequestCaptor = new HeaderValueRequestCaptor("key");
-        when(this.watcher.get("/get")).thenCapture(parameterValueCaptor, headerValueRequestCaptor);
+        when(watcher.get("/get")).thenCapture(parameterValueCaptor, headerValueRequestCaptor);
 
         // act
         restTemplate.execute("http://localhost:8500/test/get?key=value", HttpMethod.GET, new TestRequestCallback(null, "value"), new TestResponseExtractor());
