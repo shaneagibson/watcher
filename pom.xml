@@ -36,16 +36,14 @@
 
     <repositories>
         <repository>
-            <id>bintray-shaneagibson-maven</id>
-            <name>shaneagibson-maven-primer</name>
+            <id>bintray</id>
             <url>https://api.bintray.com/maven/shaneagibson/maven/primer</url>
         </repository>
     </repositories>
 
     <distributionManagement>
         <repository>
-            <id>bintray-shaneagibson-maven</id>
-            <name>shaneagibson-maven-watcher</name>
+            <id>bintray</id>
             <url>https://api.bintray.com/maven/shaneagibson/maven/watcher</url>
         </repository>
     </distributionManagement>
